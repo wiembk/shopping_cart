@@ -1,0 +1,36 @@
+/* src/components/LandingPage.css */
+.landing-page {
+    background-size: cover;
+    height: 100vh;
+    color: white;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .company-name {
+    font-size: 3rem;
+    font-weight: bold;
+  }
+  
+  .company-description {
+    font-size: 1.5rem;
+    margin: 20px 0;
+  }
+  
+  .get-started {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  
+  .get-started:hover {
+    background-color: #45a049;
+  }
+  
