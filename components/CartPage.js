@@ -1,50 +1,69 @@
 import React from 'react';
-import './ProductListingPage.css';
+import './CartPage.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { addToCart } from '../redux/cartSlice';
+import { removeFromCart, increment, decrement } from '../redux/cartSlice';
+import Header from './Header'; // Include Header component
 
-const plants = [
-    { id: 1, name: 'Fiddle Leaf Fig', price: 25, category: 'Indoor', image: '/plants/fiddle.jpg' },
-    { id: 2, name: 'Snake Plant', price: 15, category: 'Indoor', image: '/plants/snake.jpg' },
-    { id: 3, name: 'Peace Lily', price: 20, category: 'Indoor', image: '/plants/peace.jpg' },
-    { id: 4, name: 'Succulent', price: 10, category: 'Outdoor', image: '/plants/succulent.jpg' },
-    { id: 5, name: 'Aloe Vera', price: 12, category: 'Outdoor', image: '/plants/aloe.jpg' },
-    { id: 6, name: 'Cactus', price: 8, category: 'Outdoor', image: '/plants/cactus.jpg' },
-];
+const CartPage = () => {
+  const dispatch = useDispatch();
+  const cart = useSelector((state) => state.cart.items);
 
-const ProductListingPage = () => {
-    const dispatch = useDispatch();
-    const cart = useSelector(state => state.cart.items);
+  const handleRemove = (id) => {
+    dispatch(removeFromCart(id));
+  };
 
-    const handleAddToCart = (plant) => {
-        dispatch(addToCart(plant));
-    };
+  const handleIncrement = (id) => {
+    dispatch(increment(id));
+  };
 
-    return (
-        <div className="product-list">
-            <h2>Product Listing</h2>
-            {['Indoor', 'Outdoor'].map(category => (
-                <div key={category}>
-                    <h3>{category} Plants</h3>
-                    <div className="plant-grid">
-                        {plants.filter(plant => plant.category === category).map(plant => (
-                            <div key={plant.id} className="plant-card">
-                                <img src={plant.image} alt={plant.name} />
-                                <h4>{plant.name}</h4>
-                                <p>${plant.price}</p>
-                                <button 
-                                    disabled={cart.some(item => item.id === plant.id)}
-                                    onClick={() => handleAddToCart(plant)}
-                                >
-                                    {cart.some(item => item.id === plant.id) ? 'Added' : 'Add to Cart'}
-                                </button>
-                            </div>
-                        ))}
-                    </div>
+  const handleDecrement = (id) => {
+    dispatch(decrement(id));
+  };
+
+  const totalAmount = cart.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
+
+  return (
+    <div>
+      <Header /> {/* Include the Header */}
+      <div className="cart-page">
+        <h2>Your Cart</h2>
+        {cart.length === 0 ? (
+          <p>Your cart is empty</p>
+        ) : (
+          <div className="cart-items">
+            {cart.map((item) => (
+              <div key={item.id} className="cart-item">
+                <img src={item.image} alt={item.name} />
+                <div className="item-details">
+                  <h4>{item.name}</h4>
+                  <p>${item.price}</p>
+                  <div className="quantity">
+                    <button onClick={() => handleDecrement(item.id)}>-</button>
+                    <span>{item.quantity}</span>
+                    <button onClick={() => handleIncrement(item.id)}>+</button>
+                  </div>
+                  <button
+                    className="remove-btn"
+                    onClick={() => handleRemove(item.id)}
+                  >
+                    Remove
+                  </button>
                 </div>
+              </div>
             ))}
-        </div>
-    );
+          </div>
+        )}
+        {cart.length > 0 && (
+          <div className="total">
+            <h3>Total: ${totalAmount.toFixed(2)}</h3>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 };
 
-export default ProductListingPage;
+export default CartPage;
